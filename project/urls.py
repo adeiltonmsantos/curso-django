@@ -17,6 +17,7 @@ Including another URLconf
 from django.contrib import admin  # type: ignore
 from django.http import HttpResponse  # type: ignore
 from django.urls import path  # type: ignore
+from recipes.views import home, contato, sobre
 
 
 def my_view(request):
@@ -25,5 +26,7 @@ def my_view(request):
 
 urlpatterns = [
     path('admin/', admin.site.urls),
-    path('sobre/', my_view),
+    path('', home),
+    path('contato/', contato),
+    path('sobre/', sobre)
 ]
