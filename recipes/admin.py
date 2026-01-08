@@ -1,3 +1,13 @@
-from django.contrib import admin
+from django.contrib import admin  # type: ignore
 
-# Register your models here.
+from . import models
+
+
+@admin.register(models.Category)
+class CategoryAdmin(admin.ModelAdmin):
+    ...
+
+
+@admin.register(models.Recipe)
+class RecipeAdmin(admin.ModelAdmin):
+    ...
