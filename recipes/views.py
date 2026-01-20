@@ -1,5 +1,5 @@
 # from django.shortcuts import render
-from django.shortcuts import get_list_or_404, render  # type: ignore
+from django.shortcuts import get_list_or_404, get_object_or_404, render  # noqa: E501
 
 from .models import Recipe
 
@@ -22,14 +22,6 @@ def category(request, category_id):
 
     recipes = get_list_or_404(rcps)
 
-    # recipes = Recipe.objects.filter(
-    #     category__id=category_id,
-    #     is_published=True,
-    # ).order_by('-id')
-
-    # if not recipes:
-    #     raise Http404('Not found 🥲')
-
     return render(request, 'recipes/pages/category.html', context={
         'recipes': recipes,
         'title': f'{recipes[0].category.name} - Category | '
@@ -37,10 +29,7 @@ def category(request, category_id):
 
 
 def recipe(request, id):
-    recipe = Recipe.objects.filter(
-        pk=id,
-        is_published=True,
-    ).order_by('-id').first()
+    recipe = get_object_or_404(Recipe, pk=id, is_published=True)
 
     return render(
         request,
