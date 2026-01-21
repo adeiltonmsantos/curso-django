@@ -1,10 +1,12 @@
-from django.test import TestCase  # import: ignore
 from django.urls import resolve, reverse
 
 from recipes import views
+from recipes.models import Recipe
+
+from .test_recipe_base import RecipeTestBase
 
 
-class RecipeViewsTest(TestCase):
+class RecipeViewsTest(RecipeTestBase):
 
     def test_recipe_view_home_is_correct(self):
         view = resolve(reverse('recipes:home'))
@@ -19,10 +21,20 @@ class RecipeViewsTest(TestCase):
         self.assertTemplateUsed(response, 'recipes/pages/home.html')
 
     def test_recipe_view_home_template_shows_no_recipe_found_if_no_recipes(self):  # noqa: E501
+        Recipe.objects.all().delete()
         response = self.client.get(reverse('recipes:home'))
         info = '<h2>Nenhuma receita encontrada 😢</h2>'
         html_txt = response.content.decode('utf-8')
         self.assertIn(info, html_txt)
+
+    def test_recipe_home_template_loads_recipes(self):
+        self.make_recipe()
+        response = self.client.get(reverse('recipes:home'))
+        content = response.content.decode('utf-8')
+        # response_context_recipes = response.context['recipes']
+        self.assertIn('Recipe Title', content)
+        self.assertIn('15 minutos', content)
+        self.assertIn('4 porções', content)
 
     def test_recipe_view_category_is_correct(self):
         view = resolve(reverse('recipes:category', kwargs={'category_id': 1}))
