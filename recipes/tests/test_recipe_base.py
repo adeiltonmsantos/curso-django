@@ -15,7 +15,7 @@ class RecipeTestBase(TestCase):
             password='123456',
             email='user@email.com'
     ):
-        User.objects.create_user(
+        return User.objects.create_user(
             first_name=first_name,
             last_name=last_name,
             username=username,
@@ -44,7 +44,7 @@ class RecipeTestBase(TestCase):
         if author_data is None:
             author_data = {}
 
-        Recipe.objects.create(
+        return Recipe.objects.create(
             category=self.create_category(**category_data),
             author=self.create_author(**author_data),
             title=title,
