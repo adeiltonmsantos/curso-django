@@ -12,7 +12,7 @@ class Category(models.Model):
 class Recipe(models.Model):
     title = models.CharField(max_length=65)  # type: ignore
     description = models.CharField(max_length=165)  # type: ignore
-    slug = models.SlugField()  # type: ignore
+    slug = models.SlugField(unique=True)  # type: ignore
     preparation_time = models.IntegerField()  # type: ignore
     preparation_time_unit = models.CharField(max_length=65)  # type: ignore
     servings = models.IntegerField()  # type: ignore
