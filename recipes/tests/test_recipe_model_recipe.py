@@ -11,7 +11,7 @@ class RecipeModelTest(RecipeTestBase):
 
     def make_recipe_without_defaults(self):
         recipe = Recipe(
-            category=self.create_category(name='Test Default Category'),
+            category=self.make_category(name='Test Default Category'),
             author=self.create_author(username='userdefault'),
             title='Recipe title',
             description='Recipe description',
@@ -37,18 +37,26 @@ class RecipeModelTest(RecipeTestBase):
         with self.assertRaises(ValidationError):
             self.recipe.full_clean()
 
-    def test_recipe_preparation_steps_is_html_is_false_by_default(self):
+    @parameterized.expand([
+        ('is_published',),
+        ('preparation_steps_is_html',)
+    ])
+    def test_recipe_default_fields_are_false_by_default(self, field):
         recipe = self.make_recipe_without_defaults()
-        # recipe.preparation_steps_is_html = True
+        # setattr(recipe, field, True)
         self.assertFalse(
-            recipe.preparation_steps_is_html,
-            msg='Preparation_steps_is_html must be False by default'
+            getattr(recipe, field),
+            msg=f'{field} must be False by default'
         )
 
-    def test_recipe_is_published_is_false_by_default(self):
-        recipe = self.make_recipe_without_defaults()
-        # recipe.is_published = True
-        self.assertFalse(
-            recipe.is_published,
-            msg='is_published must be False by default'
+    def test_recipe_string_representation(self):
+        needed = 'Testing Representation'
+        self.recipe.title = 'Testing Representation'
+        self.recipe.full_clean()
+        self.recipe.save()
+        self.assertEqual(
+            str(self.recipe),
+            needed,
+            msg=f'Recipe string must be "{needed}"'
+            f' but "{self.recipe.title}" was found'
         )

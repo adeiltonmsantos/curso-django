@@ -4,7 +4,7 @@ from recipes.models import Category, Recipe, User
 
 
 class RecipeTestBase(TestCase):
-    def create_category(self, name='Category'):
+    def make_category(self, name='Category'):
         return Category.objects.create(name=name)
 
     def create_author(
@@ -38,6 +38,11 @@ class RecipeTestBase(TestCase):
             preparation_steps_is_html=False,
             is_published=True
     ):
+        """
+        Creates a recipe for testing, allowing to provide the name of a
+        new category. If no name is provided, creates a category with the
+        default name 'Category'.
+        """
         if category_data is None:
             category_data = {}
 
@@ -45,8 +50,49 @@ class RecipeTestBase(TestCase):
             author_data = {}
 
         return Recipe.objects.create(
-            category=self.create_category(**category_data),
+            category=self.make_category(**category_data),
             author=self.create_author(**author_data),
+            title=title,
+            description=description,
+            slug=slug,
+            preparation_time=preparation_time,
+            preparation_time_unit=preparation_time_unit,
+            servings=servings,
+            servings_unit=servings_unit,
+            preparation_steps=preparation_steps,
+            preparation_steps_is_html=preparation_steps_is_html,
+            is_published=is_published,
+        )
+
+    def make_recipes_with_category_id(
+        self,
+        category_id,
+        title='Recipe Title',
+        description='Recipe Description',
+        slug='recipe-slug',
+        preparation_time=15,
+        preparation_time_unit='minutos',
+        servings=4,
+        servings_unit='porções',
+        preparation_steps='Recipe Preparation Steps',
+        preparation_steps_is_html=False,
+        is_published=True
+    ):
+        """
+        Creates a recipe for testing, associating it with an exisiting
+        category by its id
+        """
+        categ = Category.objects.get(id=category_id)
+
+        # Verifying if some user exists
+        if not User.objects.exists():
+            author = self.create_author()
+        else:
+            author = User.objects.first()
+
+        return Recipe.objects.create(
+            category=categ,
+            author=author,
             title=title,
             description=description,
             slug=slug,

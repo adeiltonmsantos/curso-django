@@ -139,6 +139,34 @@ class RecipeViewsTest(RecipeTestBase):
         content = response.content.decode('utf-8')
         self.assertIn(neeed_title, content)
 
+    def test_recipe_view_category_loads_recipes_of_same_category(self):
+        """
+        Test if category template loads recipes of a category and if
+        title is shown correctly
+        """
+        recipe = self.make_recipe(category_data={'name': 'Category Test'})
+        categ_id = recipe.category.id
+        categ_name = recipe.category.name
+
+        # Creating another recipe to fail the test ######## # noqa: E266
+        # self.make_recipes_with_category_id(categ_id)
+
+        response = self.client.get(
+            reverse('recipes:category', kwargs={'category_id': categ_id}))
+        qt_recipes = len(response.context['recipes'])
+        title_expected = f'{categ_name} - Category | '
+        self.assertEqual(
+            qt_recipes,
+            1,
+            msg=f'It should load only {1} recipe(s) but loaded {qt_recipes}'
+        )
+        self.assertIn(
+            title_expected,
+            response.context['title'],
+            msg=f'The title template should be "{title_expected}" but '
+            f'found "{response.context["title"]}"'
+        )
+
     def test_recipe_view_category_doesnt_loads_not_published_recipes(self):
         """
         Test if category template doens't load not published recipes

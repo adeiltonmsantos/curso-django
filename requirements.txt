@@ -1,5 +1,6 @@
 asgiref==3.8.1
 colorama==0.4.6
+coverage==7.13.1
 Django==5.2
 django-stubs==5.2.8
 django-stubs-ext==5.2.8
