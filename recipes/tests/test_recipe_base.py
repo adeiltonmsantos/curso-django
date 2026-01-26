@@ -69,7 +69,7 @@ class RecipeTestBase(TestCase):
         category_id,
         title='Recipe Title',
         description='Recipe Description',
-        slug='recipe-slug',
+        slug='recipe-slug-for',
         preparation_time=15,
         preparation_time_unit='minutos',
         servings=4,
