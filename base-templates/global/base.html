@@ -1,15 +1,19 @@
 <!DOCTYPE html>
 <html lang="pt-BR">
-    <head>
+
+<head>
     {% include "recipes/partials/head.html" %}
     <title>{% block title %}{% endblock title %}Recipes</title>
-    </head>
+</head>
+
 <body>
     {% include "recipes/partials/header.html" %}
     {% include "recipes/partials/search.html" %}
     <main class="main-content-container">
-        {% block content %}
-        {% endblock content %}
+        {% block content %}{% endblock content %}
+        {% if recipes.has_other_pages %}
+            {% include "recipes/partials/pagination.html" %}
+        {% endif %}
     </main>
     {% include "recipes/partials/footer.html" %}
 </body>
