@@ -1,4 +1,7 @@
 # from django.shortcuts import render
+import os
+
+from django.contrib import messages
 from django.db.models import Q
 from django.http import Http404
 from django.shortcuts import get_list_or_404, get_object_or_404, render  # noqa: E501
@@ -7,10 +10,13 @@ from utils.pagination import make_pagination
 
 from .models import Recipe
 
+PER_PAGE = os.environ.get('PER_PAGE')
+
 
 def home(request):
     recipes = Recipe.objects.filter(is_published=True).order_by('-id')
-    page_obj, pagination_obj = make_pagination(request, recipes, 9)
+    page_obj, pagination_obj = make_pagination(request, recipes, PER_PAGE)
+
     return render(
         request,
         'recipes/pages/home.html',
@@ -27,7 +33,7 @@ def category(request, category_id):
     ).order_by('-id')
 
     recipes = get_list_or_404(rcps)
-    page_obj, pagination_obj = make_pagination(request, recipes, 9)
+    page_obj, pagination_obj = make_pagination(request, recipes, PER_PAGE)
 
     return render(request, 'recipes/pages/category.html', context={
         'recipes': page_obj,
@@ -49,6 +55,10 @@ def recipe(request, id):
 
 
 def search(request):
+
+    # Teste de flash message
+    messages.info(request, 'Você realizou uma pesquisa')
+
     search_item = request.GET.get('q', '').strip()
     if not search_item:
         raise Http404()
@@ -59,7 +69,7 @@ def search(request):
         ),
         is_published=True
     ).order_by('title')
-    page_obj, pagination_obj = make_pagination(request, recipes, 9)
+    page_obj, pagination_obj = make_pagination(request, recipes, PER_PAGE)
     return render(
         request,
         'recipes/pages/search.html',
