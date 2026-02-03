@@ -15,7 +15,6 @@ PER_PAGE = os.environ.get('PER_PAGE')
 def home(request):
     recipes = Recipe.objects.filter(is_published=True).order_by('-id')
     page_obj, pagination_obj = make_pagination(request, recipes, PER_PAGE)
-
     return render(
         request,
         'recipes/pages/home.html',
