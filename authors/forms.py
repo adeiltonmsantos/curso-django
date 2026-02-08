@@ -75,26 +75,45 @@ class RegisterForm(forms.ModelForm):
             })
         }
 
+    def validate_by_field_size(self, field_name_print, field_cleaned_data, field_size):  # noqa: E501
+        """
+        validate_by_field_size(): returns True is validation is ok by comparing field size with 'field_size'
+            - field_name_print: field name to show in message
+            - field_cleaned_data: value of field from self.cleaned_data
+            - field_size: if filed size is smaller then field_size an error raises # noqa: E501
+        """
+        if len(field_cleaned_data) < field_size:
+            raise ValidationError(
+                f'"{field_name_print}" field must have more then %(value)s letters',  # noqa: E501
+                code='invalid',
+                params={'value': field_size}
+            )
+        return True
+
     def clean_first_name(self):
         data = self.cleaned_data.get('first_name')
 
-        if len(data) < 4:
-            raise ValidationError(
-                '"First name" field must have more then %(value)s letters',
-                code='invalid',
-                params={'value': 3}
-            )
-
-        return data
+        if self.validate_by_field_size('First name', data, 4):
+            return data
 
     def clean_last_name(self):
         data = self.cleaned_data.get('last_name')
 
-        if len(data) < 4:
-            raise ValidationError(
-                '"Last name" field must have more then %(value)s letters',
-                code='invalid',
-                params={'value': 3}
-            )
+        if self.validate_by_field_size('Last name', data, 4):
+            return data
 
-        return data
+    def clean(self):
+        cleaned_data = super().clean()
+
+        pswd = cleaned_data.get('password')
+        pswd2 = cleaned_data.get('password2')
+
+        if pswd != pswd2:
+            error = ValidationError(
+                '"Password" and "Password2" must be equal',
+                code='invalid'
+            )
+            raise ValidationError({
+                'password': error,
+                'password2': error
+            })
