@@ -7,6 +7,21 @@ def edit_attr_widget_field(field, attr_name, attr_val):
     field.widget.attrs[attr_name] = attr_val
 
 
+def field_size_correct(field_name_print, field_cleaned_data, field_size):  # noqa: E501
+    """
+    field_size_correct(): if field size < 'field_size' a ValidationError is raised
+        - field_name_print: field name to show in message
+        - field_cleaned_data: value of field from self.cleaned_data
+        - field_size: if filed size is smaller then field_size an error raises # noqa: E501
+    """
+    if len(field_cleaned_data) < field_size:
+        raise ValidationError(
+            f'"{field_name_print}" field must have more then %(value)s letters',  # noqa: E501
+            code='invalid',
+            params={'value': field_size}
+        )
+
+
 class RegisterForm(forms.ModelForm):
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
@@ -18,6 +33,22 @@ class RegisterForm(forms.ModelForm):
             self.fields['first_name'], 'placeholder', 'Ex.: John')
         edit_attr_widget_field(
             self.fields['last_name'], 'placeholder', 'Ex.: Doe')
+
+    first_name = forms.CharField(
+        validators=[lambda value: field_size_correct('First name', value, 4)],  # noqa: E501
+        widget=forms.TextInput(attrs={
+            'placeholder': 'Type your first name here',
+            'class': 'input text-input'
+        })
+    )
+
+    last_name = forms.CharField(
+        validators=[lambda value: field_size_correct('Last name', value, 4)],  # noqa: E501
+        widget=forms.TextInput(attrs={
+            'placeholder': 'Type your last name here',
+            'class': 'input text-input'
+        })
+    )
 
     password = forms.CharField(
         required=True,
@@ -66,41 +97,10 @@ class RegisterForm(forms.ModelForm):
             }
         }
         widgets = {
-            'first_name': forms.TextInput(attrs={
-                'placeholder': 'Type your username here',
-                'class': 'input text-input'
-            }),
             'password': forms.PasswordInput(attrs={
                 'placeholder': 'Type your password here'
             })
         }
-
-    def validate_by_field_size(self, field_name_print, field_cleaned_data, field_size):  # noqa: E501
-        """
-        validate_by_field_size(): returns True is validation is ok by comparing field size with 'field_size'
-            - field_name_print: field name to show in message
-            - field_cleaned_data: value of field from self.cleaned_data
-            - field_size: if filed size is smaller then field_size an error raises # noqa: E501
-        """
-        if len(field_cleaned_data) < field_size:
-            raise ValidationError(
-                f'"{field_name_print}" field must have more then %(value)s letters',  # noqa: E501
-                code='invalid',
-                params={'value': field_size}
-            )
-        return True
-
-    def clean_first_name(self):
-        data = self.cleaned_data.get('first_name')
-
-        if self.validate_by_field_size('First name', data, 4):
-            return data
-
-    def clean_last_name(self):
-        data = self.cleaned_data.get('last_name')
-
-        if self.validate_by_field_size('Last name', data, 4):
-            return data
 
     def clean(self):
         cleaned_data = super().clean()
