@@ -33,28 +33,31 @@ class RegisterForm(forms.ModelForm):
             self.fields['first_name'], 'placeholder', 'Ex.: John')
         edit_attr_widget_field(
             self.fields['last_name'], 'placeholder', 'Ex.: Doe')
+        edit_attr_widget_field(
+            self.fields['password'], 'placeholder', 'Your password here')
+        edit_attr_widget_field(
+            self.fields['password2'], 'placeholder', 'Repeat your password here')  # noqa: E501
 
     first_name = forms.CharField(
+        label='First name',
         validators=[lambda value: field_size_correct('First name', value, 4)],  # noqa: E501
         widget=forms.TextInput(attrs={
-            'placeholder': 'Type your first name here',
             'class': 'input text-input'
         })
     )
 
     last_name = forms.CharField(
+        label='Last name',
         validators=[lambda value: field_size_correct('Last name', value, 4)],  # noqa: E501
         widget=forms.TextInput(attrs={
-            'placeholder': 'Type your last name here',
             'class': 'input text-input'
         })
     )
 
     password = forms.CharField(
         required=True,
-        widget=forms.PasswordInput(attrs={
-            'placeholder': 'Your password'
-        }),
+        label='Password',
+        widget=forms.PasswordInput(),
         error_messages={
             'required': 'Password must not be empty'
         },
@@ -66,9 +69,8 @@ class RegisterForm(forms.ModelForm):
     )
     password2 = forms.CharField(
         required=True,
-        widget=forms.PasswordInput(attrs={
-            'placeholder': 'Repeat your password'
-        })
+        label='Password 2',
+        widget=forms.PasswordInput()
     )
 
     class Meta:
@@ -80,13 +82,9 @@ class RegisterForm(forms.ModelForm):
             'email',
             'password',
         ]
-        # exclude = ['first_name']
         labels = {
             'username': 'Username',
-            'first_name': 'First name',
-            'last_name': 'Last name',
             'email': 'E-mail',
-            'password': 'Password',
         }
         help_texts = {
             'email': 'The e-mail must be valid.',
