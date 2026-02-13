@@ -1,4 +1,7 @@
-from django.test import TestCase
+from unittest import TestCase
+
+from django.test import TestCase as DjangoTestCase
+from django.urls import reverse
 from parameterized import parameterized  # type: ignore
 
 from authors.forms import RegisterForm
@@ -43,3 +46,25 @@ class AuthorRegisterFormUnitTest(TestCase):
         form = RegisterForm()
         current_label = form.fields[field_name].label
         self.assertEqual(current_label, label)
+
+
+class AuthorRegisterFormIntegrationTest(DjangoTestCase):
+    def setUp(self):
+        self.form_data = {
+            'username': 'user',
+            'first_name': 'first',
+            'last_name': 'last',
+            'email': 'user@email.com',
+            'password': 'Str0ngP@ssw0rd1',
+            'password2': 'Str0ngP@ssw0rd1'
+        }
+        return super().setUp()
+
+    @parameterized.expand([
+        ('username', 'Este campo é obrigatório'),
+    ])
+    def test_fields_cannot_be_empty(self, field, msg):
+        self.form_data[field] = ''
+        url = reverse('authors:create')
+        response = self.client.post(url, data=self.form_data, follow=True)
+        ...
