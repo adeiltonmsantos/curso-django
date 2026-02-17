@@ -27,7 +27,7 @@ class AuthorRegisterFormUnitTest(TestCase):
           'one lowercase letter and one number. The length should be '
           'at least 8 characters.')
          ),
-        ('email', 'The e-mail must be valid.'),
+        ('email', 'The e-mail must be valid'),
     ])
     def test_fields_help_texts(self, field_name, help_text):
         form = RegisterForm()
@@ -50,21 +50,43 @@ class AuthorRegisterFormUnitTest(TestCase):
 
 class AuthorRegisterFormIntegrationTest(DjangoTestCase):
     def setUp(self):
-        self.form_data = {
-            'username': 'user',
-            'first_name': 'first',
-            'last_name': 'last',
-            'email': 'user@email.com',
-            'password': 'Str0ngP@ssw0rd1',
-            'password2': 'Str0ngP@ssw0rd1'
-        }
+        self.form_data = {}
         return super().setUp()
 
     @parameterized.expand([
-        ('username', 'Este campo é obrigatório'),
+        ('username', 'Username must not be empty'),
+        ('first_name', 'First name must not be empty'),
+        ('last_name', 'Last name must not be empty'),
+        ('email', 'E-mail must not be empty'),
+        ('password', 'Password must not be empty'),
+        ('password2', 'Password 2 must not be empty'),
     ])
     def test_fields_cannot_be_empty(self, field, msg):
         self.form_data[field] = ''
         url = reverse('authors:create')
         response = self.client.post(url, data=self.form_data, follow=True)
-        ...
+        self.assertIn(
+            msg,
+            response.content.decode('utf-8'),
+            msg=f'For "{field}" field, error message should be "{msg}"'
+        )
+
+    def test_first_name_field_min_length(self):
+        self.form_data['first_name'] = 'a' * 2
+        url = reverse('authors:create')
+        response = self.client.post(url, data=self.form_data, follow=True)
+        self.assertIn(
+            'First name must have at least 4 characters',
+            response.content.decode('utf-8'),
+            msg='"Fist name" field must have at least 4 characters'
+        )
+
+    def test_first_name_field_max_length(self):
+        self.form_data['first_name'] = 'a' * 151
+        url = reverse('authors:create')
+        response = self.client.post(url, data=self.form_data, follow=True)
+        self.assertIn(
+            'Maximum value of characters for First name is 150',
+            response.content.decode('utf-8'),
+            msg='"Fist name" field must have less then 151 characters'
+        )

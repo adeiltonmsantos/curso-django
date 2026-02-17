@@ -43,7 +43,14 @@ class RegisterForm(forms.ModelForm):
         validators=[lambda value: field_size_correct('First name', value, 4)],  # noqa: E501
         widget=forms.TextInput(attrs={
             'class': 'input text-input'
-        })
+        }),
+        error_messages={
+            'required': 'First name must not be empty',
+            'min_length': 'First name must have at least 4 characters',
+            'max_length': 'Maximum value of characters for First name is 150',
+        },
+        min_length=3,
+        max_length=150
     )
 
     last_name = forms.CharField(
@@ -51,26 +58,30 @@ class RegisterForm(forms.ModelForm):
         validators=[lambda value: field_size_correct('Last name', value, 4)],  # noqa: E501
         widget=forms.TextInput(attrs={
             'class': 'input text-input'
-        })
+        }),
+        error_messages={'required': 'Last name must not be empty'}
+    )
+
+    email = forms.EmailField(
+        label='E-mail',
+        error_messages={'required': 'E-mail must not be empty'},
+        help_text='The e-mail must be valid'
     )
 
     password = forms.CharField(
-        required=True,
         label='Password',
         widget=forms.PasswordInput(),
-        error_messages={
-            'required': 'Password must not be empty'
-        },
         help_text=(
             'Password must have at least one uppercase letter, '
             'one lowercase letter and one number. The length should be '
             'at least 8 characters.'
-        )
+        ),
+        error_messages={'required': 'Password must not be empty'}
     )
     password2 = forms.CharField(
-        required=True,
         label='Password 2',
-        widget=forms.PasswordInput()
+        widget=forms.PasswordInput(),
+        error_messages={'required': 'Password 2 must not be empty'}
     )
 
     class Meta:
@@ -86,13 +97,10 @@ class RegisterForm(forms.ModelForm):
             'username': 'Username',
             'email': 'E-mail',
         }
-        help_texts = {
-            'email': 'The e-mail must be valid.',
-        }
         error_messages = {
             'username': {
-                'required': 'This field must not be empty',
-            }
+                'required': 'Username must not be empty',
+            },
         }
         widgets = {
             'password': forms.PasswordInput(attrs={
