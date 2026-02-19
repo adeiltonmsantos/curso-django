@@ -1,3 +1,5 @@
+import re
+
 from django import forms
 from django.contrib.auth.models import User
 from django.core.exceptions import ValidationError
@@ -19,6 +21,19 @@ def field_size_correct(field_name_print, field_cleaned_data, field_size):  # noq
             f'"{field_name_print}" field must have more then %(value)s letters',  # noqa: E501
             code='invalid',
             params={'value': field_size}
+        )
+
+
+def strong_password(password):
+    regex = re.compile(r'^(?=.*[a-z])(?=.*[A-Z])(?=.*[0-9]).{8,}$')
+
+    if not regex.match(password):
+        raise ValidationError((
+            'Password must have at least one uppercase letter, '
+            'one lowercase letter and one number. The length should be '
+            'at least 8 characters.'
+        ),
+            code='invalid'
         )
 
 
@@ -76,7 +91,8 @@ class RegisterForm(forms.ModelForm):
             'one lowercase letter and one number. The length should be '
             'at least 8 characters.'
         ),
-        error_messages={'required': 'Password must not be empty'}
+        error_messages={'required': 'Password must not be empty'},
+        validators=[strong_password]
     )
     password2 = forms.CharField(
         label='Password 2',
