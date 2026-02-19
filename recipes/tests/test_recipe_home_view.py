@@ -92,3 +92,20 @@ class RecipeHomeViewTest(RecipeTestBase):
                 msg=f'One page in Home template must have '
                 f'{paginator.num_pages} but found {num_items_wanted}'
             )
+
+    def test_recipe_home__invalid_page_query_uses_page_one(self):
+        for i in range(8):
+            kwargs = {
+                'author_data': {'username': f'user{i}'},
+                'slug': f'recipe-{i}'
+            }
+            self.make_recipe(**kwargs)
+
+        with patch('recipes.views.PER_PAGE', new=3):
+            response = self.client.get(reverse('recipes:home') + '?page=1A')
+            self.assertEqual(
+                response.context['recipes'].number,
+                1,
+                msg='If page query is invalid, Home template must load page 1'
+            )
+        
