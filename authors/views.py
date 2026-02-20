@@ -49,15 +49,31 @@ def login_view(request):
 
 
 def login_create(request):
+    # Redirecting to 404 page if there's no POST data
     if not request.POST:
         raise Http404
 
+    # Instantiating form with POST data
     form = LoginForm(request.POST)
-    login_url = reverse('authors:login')
+    # Login template URL
+    login_url = reverse('authors:login_register')
 
+    # Form is valid. Trying authenticate user
     if form.is_valid():
         authenticated_user = authenticate(
             username=form.cleaned_data.get('username', None),
             password=form.cleaned_data.get('password', None),
         )
-    return render(request, 'authors/pages/login.html')
+        # User is authenticated. Logging in and defining sucess message
+        if authenticated_user is not None:
+            login(request, authenticated_user)
+            messages.success(request, 'You are logged in')
+        # User is not authenticated. Defining error message
+        else:
+            messages.error(request, 'Invalid credentials')
+    # Form is not valid. Redirecting to login page with errors
+    else:
+        messages.error(request, 'Invalid username or password')
+
+    # Redirecting to login page
+    return redirect(login_url)
