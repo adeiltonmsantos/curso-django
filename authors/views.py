@@ -1,5 +1,6 @@
 from django.contrib import messages
-from django.contrib.auth import authenticate, login
+from django.contrib.auth import authenticate, login, logout
+from django.contrib.auth.decorators import login_required
 from django.http import Http404
 from django.shortcuts import redirect, render
 from django.urls import reverse
@@ -33,6 +34,7 @@ def register_create(request):
         user.save()
         messages.success(request, 'Your user is created, please log in.')
         del (request.session['register_form_data'])
+        return redirect(reverse('authors:login_register'))
 
     return redirect('authors:register')
 
@@ -44,7 +46,8 @@ def login_view(request):
         'authors/pages/login.html',
         {
             'form': form,
-            'form_action': reverse('authors:login_create')
+            'form_action': reverse('authors:login_create'),
+            'form_action_logout': reverse('authors:logout'),
         })
 
 
@@ -77,3 +80,21 @@ def login_create(request):
 
     # Redirecting to login page
     return redirect(login_url)
+
+
+@login_required(
+    login_url='authors:login',
+    redirect_field_name='next'
+)
+def logout_view(request):
+    # Checking if there's POST data. If not, redirecting to login page
+    if not request.POST:
+        return redirect(reverse('authors:login_register'))
+
+    # Checking if user is authenticated. if not, redirect to login page
+    if not request.user.is_authenticated:
+        return redirect(reverse('authors:login_register'))
+
+    logout(request)
+    messages.info(request, 'You are logged out.')
+    return redirect(reverse('authors:login_register'))

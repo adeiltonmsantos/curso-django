@@ -1,0 +1,7 @@
+Please,
+<form class="logout-form" action="{{ form_action_logout }}" method="post">
+    {% csrf_token %}
+    <input type="hidden" name="username" value="{{ request.user.username}}">
+    <button class="btn-logout" type="submit">click here</button>
+</form>
+to logout.

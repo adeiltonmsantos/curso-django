@@ -350,6 +350,19 @@ h6 {
   color: var(--color-white);
 }
 
+.logout-form{
+  display: inline;
+}
+
+.btn-logout{
+  background: none;
+  border: none;
+  color: var(--color-primary-dark-hover);
+  cursor: pointer;
+  font-size: 1.6rem;
+  font-weight: bold;
+}
+
 /* Flash messages */
 .message {
   padding: 1rem;
