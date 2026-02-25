@@ -1,5 +1,25 @@
 from pathlib import Path
 
+from selenium import webdriver
+from selenium.webdriver.chrome.service import Service
+
 ROOT_PATH = Path(__file__).parent.parent
-CHROMEDRIVER_NAME = 'chrome'
-CHROMEDRIVER_PATH = ROOT_PATH / 'bin/chrome-linux64' / CHROMEDRIVER_NAME
+CHROMEDRIVER_NAME = 'chromedriver'
+CHROMEDRIVER_PATH = ROOT_PATH / 'bin' / CHROMEDRIVER_NAME
+
+
+def make_chrome_browser(*options):
+    chrome_options = webdriver.ChromeOptions()
+
+    if chrome_options is not None:
+        for option in options:
+            chrome_options.add_argument(option)
+
+    chrome_service = Service(executable_path=CHROMEDRIVER_PATH)  # type: ignore
+    browser = webdriver.Chrome(service=chrome_service, options=chrome_options)
+    return browser
+
+
+if __name__ == '__main__':
+    browser = make_chrome_browser()
+    browser.get('https://www.respiro-psi.com.br')
