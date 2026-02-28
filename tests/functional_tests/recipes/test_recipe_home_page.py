@@ -7,4 +7,4 @@ class RecipeHomePageFunctionalTest(RecipeBaseFunctionalTest):
     def test_recipe_home_page_without_recipes_not_found_message(self):
         self.browser.get(self.live_server_url)
         body = self.browser.find_element(By.TAG_NAME, 'body')
-        self.assertIn('Nenhuma receita encontrada aqui :(', body.text)
+        self.assertIn('Nenhuma receita encontrada 😢', body.text)

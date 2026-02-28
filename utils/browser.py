@@ -1,8 +1,11 @@
 import os
 from pathlib import Path
 
+# from dotenv import load_dotenv
 from selenium import webdriver
 from selenium.webdriver.chrome.service import Service
+
+# load_dotenv()
 
 ROOT_PATH = Path(__file__).parent.parent
 CHROMEDRIVER_NAME = 'chromedriver'
