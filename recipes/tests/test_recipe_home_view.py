@@ -63,12 +63,7 @@ class RecipeHomeViewTest(RecipeTestBase):
         self.assertIn('<h2>Nenhuma receita encontrada 😢</h2>', content)
 
     def test_recipe_home_template_is_paginated(self):
-        for i in range(18):
-            kwargs = {
-                'author_data': {'username': f'user{i}'},
-                'slug': f'recipe-{i}'
-            }
-            self.make_recipe(**kwargs)
+        self.make_recipes_in_batch(18)
 
         with patch('recipes.views.PER_PAGE', new=3):
             response = self.client.get(reverse('recipes:home'))
@@ -94,12 +89,7 @@ class RecipeHomeViewTest(RecipeTestBase):
             )
 
     def test_recipe_home__invalid_page_query_uses_page_one(self):
-        for i in range(8):
-            kwargs = {
-                'author_data': {'username': f'user{i}'},
-                'slug': f'recipe-{i}'
-            }
-            self.make_recipe(**kwargs)
+        self.make_recipes_in_batch(qtd=8)
 
         with patch('recipes.views.PER_PAGE', new=3):
             response = self.client.get(reverse('recipes:home') + '?page=1A')
