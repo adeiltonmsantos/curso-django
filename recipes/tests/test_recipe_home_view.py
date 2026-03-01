@@ -108,4 +108,3 @@ class RecipeHomeViewTest(RecipeTestBase):
                 1,
                 msg='If page query is invalid, Home template must load page 1'
             )
-        
