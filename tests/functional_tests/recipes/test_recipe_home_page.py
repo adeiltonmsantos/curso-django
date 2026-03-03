@@ -2,6 +2,7 @@ from unittest.mock import patch
 
 import pytest
 from selenium.webdriver.common.by import By
+from selenium.webdriver.common.keys import Keys
 
 from recipes.tests.test_recipe_base import RecipeMixin
 
@@ -18,6 +19,8 @@ class RecipeHomePageFunctionalTest(RecipeBaseFunctionalTest, RecipeMixin):
 
     @patch('recipes.views.PER_PAGE', new=2)
     def test_recipe_search_input_can_find_correct_recipes(self):
+        recipes = self.make_recipes_in_batch()
+
         # User opens the home page
         self.browser.get(self.live_server_url)
 
@@ -29,6 +32,15 @@ class RecipeHomePageFunctionalTest(RecipeBaseFunctionalTest, RecipeMixin):
 
         # Clicks in field e types the search text "Recipe Title N.º 1" to find
         # a recipe
-        search_input.send_keys('Recipe Title N.º 1')
+        search_input.send_keys(recipes[0].title)
+        search_input.send_keys(Keys.ENTER)
+
+        container = self.browser.find_element(
+            By.CLASS_NAME, 'main-content-list').text
 
         self.sleep(6)
+
+        self.assertIn(
+            recipes[0].title,
+            container
+        )
