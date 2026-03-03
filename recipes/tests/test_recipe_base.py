@@ -109,6 +109,7 @@ class RecipeMixin:
         recipes = []
         for i in range(qtd):
             kwargs = {
+                'title': f'Recipe Title N.º {i}',
                 'author_data': {'username': f'user{i}'},
                 'slug': f'recipe-{i}'
             }
