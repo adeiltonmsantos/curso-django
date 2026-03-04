@@ -30,13 +30,16 @@ class RecipeHomePageFunctionalTest(RecipeBaseFunctionalTest, RecipeMixin):
             '//input[@placeholder="Type something here to search"]'
         )
 
-        # Clicks in field e types the search text "Recipe Title N.º 1" to find
-        # a recipe
+        # Clicks in field and types the search text "Recipe Title N.º 1"
+        # to find a recipe
         search_input.send_keys(recipes[0].title)
         search_input.send_keys(Keys.ENTER)
 
         container = self.browser.find_element(
             By.CLASS_NAME, 'main-content-list').text
+
+        # container = self.browser.find_element(
+        #     By.TAG_NAME, 'body').text
 
         self.sleep(6)
 
@@ -44,3 +47,12 @@ class RecipeHomePageFunctionalTest(RecipeBaseFunctionalTest, RecipeMixin):
             recipes[0].title,
             container
         )
+
+    @patch('recipes.views.PER_PAGE', new=2)
+    def test_recipe_home_page_pagination(self):
+        recipes = self.make_recipes_in_batch()
+
+        # User opens the home page
+        self.browser.get(self.live_server_url)
+
+        self.sleep(6)
