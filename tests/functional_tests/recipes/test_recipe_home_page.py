@@ -50,7 +50,7 @@ class RecipeHomePageFunctionalTest(RecipeBaseFunctionalTest, RecipeMixin):
 
     @patch('recipes.views.PER_PAGE', new=2)
     def test_recipe_home_page_pagination(self):
-        recipes = self.make_recipes_in_batch()
+        self.make_recipes_in_batch()
 
         # User opens the home page
         self.browser.get(self.live_server_url)
@@ -64,10 +64,21 @@ class RecipeHomePageFunctionalTest(RecipeBaseFunctionalTest, RecipeMixin):
 
         # User opens the home page
         self.browser.get(self.live_server_url)
-        self.sleep(2)
+        self.sleep(5)
 
         # User sees pagination and click on page 2 link
         page_2 = self.browser.find_element(
             By.XPATH,
-            '//a[aria-label="Go to page 2"]'
+            '//a[@aria-label="Go to page 2"]'
+        )
+
+        page_2.click()
+
+        # User sees 2 more recipes in page
+        total_recipes_in_page = len(self.browser.find_elements(
+            By.CLASS_NAME, 'recipe-list-item'))
+
+        self.assertEqual(
+            2,
+            total_recipes_in_page
         )
