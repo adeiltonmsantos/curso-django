@@ -22,8 +22,8 @@ def make_chrome_browser(*options):
     if os.environ.get('SELENIUM_HEADLESS') == '1':
         chrome_options.add_argument('--headless')
 
-    # if os.environ.get('SELENIUM_DISABLE_INFOBARS') == '1':
-    #     chrome_options.add_argument('--disable-infobars')
+    if os.environ.get('SELENIUM_DISABLE_INFOBARS') == '1':
+        chrome_options.add_argument('--disable-infobars')
 
     chrome_service = Service(executable_path=CHROMEDRIVER_PATH)  # type: ignore
     browser = webdriver.Chrome(service=chrome_service, options=chrome_options)
