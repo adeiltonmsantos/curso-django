@@ -23,6 +23,7 @@ class RecipeHomePageFunctionalTest(RecipeBaseFunctionalTest, RecipeMixin):
 
         # User opens the home page
         self.browser.get(self.live_server_url)
+        self.sleep()
 
         # He sees a text field with 'Type something here to search'
         search_input = self.browser.find_element(
@@ -37,9 +38,6 @@ class RecipeHomePageFunctionalTest(RecipeBaseFunctionalTest, RecipeMixin):
 
         container = self.browser.find_element(
             By.CLASS_NAME, 'main-content-list').text
-
-        # container = self.browser.find_element(
-        #     By.TAG_NAME, 'body').text
 
         self.sleep(6)
 
@@ -64,7 +62,7 @@ class RecipeHomePageFunctionalTest(RecipeBaseFunctionalTest, RecipeMixin):
 
         # User opens the home page
         self.browser.get(self.live_server_url)
-        self.sleep(5)
+        self.sleep(1)
 
         # User sees pagination and click on page 2 link
         page_2 = self.browser.find_element(
