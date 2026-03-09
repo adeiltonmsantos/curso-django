@@ -16,13 +16,13 @@ class AuthorsRegisterFunctionalTest(AuthorsBaseFunctionalTest):
             By.TAG_NAME,
             'input'
         )
-
         for field in fields:
             if field.is_displayed():
                 field.send_keys(' ' * 20)
 
     def test_the_test(self):
         self.browser.get(self.live_server_url + '/authors/register/')
+
         form = self.browser.find_element(
             By.XPATH,
             '/html/body/main/div[3]/form'
