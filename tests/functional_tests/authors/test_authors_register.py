@@ -11,6 +11,12 @@ class AuthorsRegisterFunctionalTest(AuthorsBaseFunctionalTest):
             f'//input[@placeholder="{placeholder}"]'
         )
 
+    def get_by_fullxpath(self, xpath):
+        return self.browser.find_element(
+            By.XPATH,
+            xpath
+        )
+
     def fill_form_dummy_data(self, form):
         fields = form.find_elements(
             By.TAG_NAME,
@@ -20,6 +26,7 @@ class AuthorsRegisterFunctionalTest(AuthorsBaseFunctionalTest):
             if field.is_displayed():
                 field.send_keys(' ' * 20)
 
+<<<<<<< HEAD
     def get_by_fullxpath(self, fullxpath):
         return self.browser.find_element(
             By.XPATH,
@@ -37,11 +44,25 @@ class AuthorsRegisterFunctionalTest(AuthorsBaseFunctionalTest):
         self.fill_form_dummy_data(form)
 
         # Filling e-mail field with valid data
+=======
+    def test_empty_first_name_error_message(self):
+        # Opening browser in form route
+        self.browser.get(self.live_server_url + '/authors/register/')
+
+        # Selecting form in browser
+        form = self.get_by_fullxpath('/html/body/main/div[3]/form')
+
+        # Filling form fields
+        self.fill_form_dummy_data(form)
+
+        # Selecting e-mail field to fill with valid characters
+>>>>>>> 31e502c26a41c6422e3c8c9226bc2c7bc66d46d2
         form.find_element(
             By.NAME,
             'email'
         ).send_keys('dummy@email.com')
 
+<<<<<<< HEAD
         # Calling callback function to test the interest field
         callback(form)
 
@@ -63,3 +84,18 @@ class AuthorsRegisterFunctionalTest(AuthorsBaseFunctionalTest):
             self.assertIn('First name must not be empty', form.text)
 
         self.form_field_test_with_callback(callback)
+=======
+        # Selecting desired field (first_name)
+        first_name_field = self.get_by_placeholder(form, 'Ex.: John')
+
+        # Leaving first_name empty to invalidate form
+        first_name_field.send_keys('    ')
+
+        # Submiting form
+        first_name_field.send_keys(Keys.ENTER)
+
+        # Selecting form in browser again after page reloading
+        form = self.get_by_fullxpath('/html/body/main/div[3]/form')
+
+        self.assertIn('First name must not be empty', form.text)
+>>>>>>> 31e502c26a41c6422e3c8c9226bc2c7bc66d46d2
