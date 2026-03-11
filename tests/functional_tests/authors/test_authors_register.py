@@ -122,3 +122,30 @@ class AuthorsRegisterFunctionalTest(AuthorsBaseFunctionalTest):
             self.assertIn('The e-mail must be valid', form.text)
 
         self.form_field_test_with_callback(callback)
+
+    def test_passwords_do_not_match(self):
+        def callback(form):
+            # Selecting the first interest field
+            password1 = self.get_by_placeholder(
+                form, 'Your password here')
+
+            # Selecting the second interest field
+            password2 = self.get_by_placeholder(
+                form, 'Repeat your password here')
+
+            # Filling the password1 field
+            password1.send_keys('@Abcd1234')
+
+            # Filling the password2 field
+            password2.send_keys('@Abcd12345')
+
+            # Submiting the form with ENTER in field
+            password2.send_keys(Keys.ENTER)
+
+            # Selecting form after submit
+            form = self.get_by_fullxpath('/html/body/main/div[3]/form')
+
+            # Testing error message
+            self.assertIn('Password and Password2 must be equal', form.text)
+
+        self.form_field_test_with_callback(callback)
