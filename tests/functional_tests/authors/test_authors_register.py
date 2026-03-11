@@ -83,9 +83,25 @@ class AuthorsRegisterFunctionalTest(AuthorsBaseFunctionalTest):
 
         self.form_field_test_with_callback(callback)
 
-    # def test_empty_username_error_message(self):
-    #     def callback(form):
-    #         ...
+    def test_empty_username_error_message(self):
+        def callback(form):
+            # Selecting the interest field
+            first_name_field = self.get_by_placeholder(
+                form, 'Your username here')
+
+            # Filling the field with invalid characters
+            first_name_field.send_keys('   ')
+
+            # Submiting the form with ENTER in field
+            first_name_field.send_keys(Keys.ENTER)
+
+            # Selecting form after submit
+            form = self.get_by_fullxpath('/html/body/main/div[3]/form')
+
+            # Testing error message
+            self.assertIn('Username must not be empty', form.text)
+
+        self.form_field_test_with_callback(callback)
 
     # def test_empty_email_error_message(self):
     #     def callback(form):
