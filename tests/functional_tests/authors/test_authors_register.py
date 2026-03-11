@@ -67,13 +67,13 @@ class AuthorsRegisterFunctionalTest(AuthorsBaseFunctionalTest):
     def test_empty_last_name_error_message(self):
         def callback(form):
             # Selecting the interest field
-            first_name_field = self.get_by_placeholder(form, 'Ex.: Doe')
+            last_name_field = self.get_by_placeholder(form, 'Ex.: Doe')
 
             # Filling the field with invalid characters
-            first_name_field.send_keys('   ')
+            last_name_field.send_keys('   ')
 
             # Submiting the form with ENTER in field
-            first_name_field.send_keys(Keys.ENTER)
+            last_name_field.send_keys(Keys.ENTER)
 
             # Selecting form after submit
             form = self.get_by_fullxpath('/html/body/main/div[3]/form')
@@ -86,14 +86,14 @@ class AuthorsRegisterFunctionalTest(AuthorsBaseFunctionalTest):
     def test_empty_username_error_message(self):
         def callback(form):
             # Selecting the interest field
-            first_name_field = self.get_by_placeholder(
+            username_field = self.get_by_placeholder(
                 form, 'Your username here')
 
             # Filling the field with invalid characters
-            first_name_field.send_keys('   ')
+            username_field.send_keys('   ')
 
             # Submiting the form with ENTER in field
-            first_name_field.send_keys(Keys.ENTER)
+            username_field.send_keys(Keys.ENTER)
 
             # Selecting form after submit
             form = self.get_by_fullxpath('/html/body/main/div[3]/form')
@@ -103,6 +103,22 @@ class AuthorsRegisterFunctionalTest(AuthorsBaseFunctionalTest):
 
         self.form_field_test_with_callback(callback)
 
-    # def test_empty_email_error_message(self):
-    #     def callback(form):
-    #         ...
+    def test_invalid_email_error_message(self):
+        def callback(form):
+            # Selecting the interest field
+            email_field = self.get_by_placeholder(
+                form, 'Your e-mail here')
+
+            # Filling the field with invalid characters
+            email_field.send_keys('email@invalid')
+
+            # Submiting the form with ENTER in field
+            email_field.send_keys(Keys.ENTER)
+
+            # Selecting form after submit
+            form = self.get_by_fullxpath('/html/body/main/div[3]/form')
+
+            # Testing error message
+            self.assertIn('The e-mail must be valid', form.text)
+
+        self.form_field_test_with_callback(callback)
