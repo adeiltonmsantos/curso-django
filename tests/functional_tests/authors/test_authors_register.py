@@ -20,23 +20,46 @@ class AuthorsRegisterFunctionalTest(AuthorsBaseFunctionalTest):
             if field.is_displayed():
                 field.send_keys(' ' * 20)
 
-    def test_empty_first_name_error_message(self):
+    def get_by_fullxpath(self, fullxpath):
+        return self.browser.find_element(
+            By.XPATH,
+            fullxpath
+        )
+
+    def form_field_test_with_callback(self, callback):
         # Opening browser in form template...
         self.browser.get(self.live_server_url + '/authors/register/')
 
         # Selecting form by fullXpath
-        form = self.browser.find_element(
-            By.XPATH,
-            '/html/body/main/div[3]/form'
-        )
+        form = self.get_by_fullxpath('/html/body/main/div[3]/form')
 
+        # Filling fields form with valid data
         self.fill_form_dummy_data(form)
+
+        # Filling e-mail field with valid data
         form.find_element(
             By.NAME,
             'email'
         ).send_keys('dummy@email.com')
 
-        first_name_field = self.get_by_placeholder(form, 'Ex.: John')
-        first_name_field.send_keys(Keys.ENTER)
+        # Calling callback function to test the interest field
+        callback(form)
 
-        self.sleep()
+    def test_empty_first_name_error_message(self):
+        def callback(form):
+            # Selecting the interest field
+            first_name_field = self.get_by_placeholder(form, 'Ex.: John')
+
+            # Filling the field with invalid data
+            first_name_field.send_keys('   ')
+
+            # Submiting the form with ENTER in field
+            first_name_field.send_keys(Keys.ENTER)
+
+            # Selecting form after submit
+            form = self.get_by_fullxpath('/html/body/main/div[3]/form')
+
+            # Testing error message
+            self.assertIn('First name must not be empty', form.text)
+
+        self.form_field_test_with_callback(callback)
