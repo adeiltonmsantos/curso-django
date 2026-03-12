@@ -1,9 +1,11 @@
+import pytest
 from selenium.webdriver.common.by import By
 from selenium.webdriver.common.keys import Keys
 
 from .base import AuthorsBaseFunctionalTest
 
 
+@pytest.mark.functional_test
 class AuthorsRegisterFunctionalTest(AuthorsBaseFunctionalTest):
     def get_by_placeholder(self, web_element, placeholder):
         return web_element.find_element(
@@ -177,8 +179,9 @@ class AuthorsRegisterFunctionalTest(AuthorsBaseFunctionalTest):
                                 'Your password here').send_keys('@UserName123')
 
         # Filling password2 field
-        self.get_by_placeholder(form,
-                                'Repeat your password here').send_keys('@UserName123')
+        self.get_by_placeholder(
+            form,
+            'Repeat your password here').send_keys('@UserName123')
 
         # Submiting the form
         form.submit()
