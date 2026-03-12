@@ -149,3 +149,42 @@ class AuthorsRegisterFunctionalTest(AuthorsBaseFunctionalTest):
             self.assertIn('Password and Password2 must be equal', form.text)
 
         self.form_field_test_with_callback(callback)
+
+    def test_user_valid_data_register_successfully(self):
+        # Opening browser in user register form template
+        self.browser.get(self.live_server_url + '/authors/register')
+
+        # Selecting the form
+        form = self.get_by_fullxpath('/html/body/main/div[3]/form')
+
+        # Filling first_name field
+        self.get_by_placeholder(form,
+                                'Ex.: John').send_keys('FirstName')
+
+        # Filling last_name field
+        self.get_by_placeholder(form, 'Ex.: Doe').send_keys('LastName')
+
+        # Filling username field
+        self.get_by_placeholder(form,
+                                'Your username here').send_keys('UserName')
+
+        # Filling e-mail field
+        self.get_by_placeholder(form,
+                                'Your e-mail here').send_keys('user@user.com')
+
+        # Filling password field
+        self.get_by_placeholder(form,
+                                'Your password here').send_keys('@UserName123')
+
+        # Filling password2 field
+        self.get_by_placeholder(form,
+                                'Repeat your password here').send_keys('@UserName123')
+
+        # Submiting the form
+        form.submit()
+
+        # Testing success flash message
+        self.assertIn(
+            'Your user is created, please log in.',
+            self.browser.find_element(By.TAG_NAME, 'body').text
+        )
