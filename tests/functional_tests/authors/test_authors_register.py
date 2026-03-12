@@ -7,18 +7,6 @@ from .base import AuthorsBaseFunctionalTest
 
 @pytest.mark.functional_test
 class AuthorsRegisterFunctionalTest(AuthorsBaseFunctionalTest):
-    def get_by_placeholder(self, web_element, placeholder):
-        return web_element.find_element(
-            By.XPATH,
-            f'//input[@placeholder="{placeholder}"]'
-        )
-
-    def get_by_fullxpath(self, xpath):
-        return self.browser.find_element(
-            By.XPATH,
-            xpath
-        )
-
     def fill_form_dummy_data(self, form):
         fields = form.find_elements(
             By.TAG_NAME,
