@@ -143,6 +143,7 @@ class AuthorsRegisterFunctionalTest(AuthorsBaseFunctionalTest):
     def test_user_valid_data_register_successfully(self):
         # Opening browser in user register form template
         self.browser.get(self.live_server_url + '/authors/register')
+        self.sleep()
 
         # Selecting the form
         form = self.get_by_fullxpath('/html/body/main/div[3]/form')

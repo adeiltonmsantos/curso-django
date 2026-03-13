@@ -23,7 +23,7 @@ class RecipeHomePageFunctionalTest(RecipeBaseFunctionalTest, RecipeMixin):
 
         # User opens the home page
         self.browser.get(self.live_server_url)
-        self.sleep(7)
+        self.sleep(2)
 
         # He sees a text field with 'Type something here to search'
         search_input = self.browser.find_element(
@@ -35,11 +35,10 @@ class RecipeHomePageFunctionalTest(RecipeBaseFunctionalTest, RecipeMixin):
         # to find a recipe
         search_input.send_keys(recipes[0].title)
         search_input.send_keys(Keys.ENTER)
+        self.sleep(2)
 
         container = self.browser.find_element(
             By.CLASS_NAME, 'main-content-list').text
-
-        self.sleep(6)
 
         self.assertIn(
             recipes[0].title,
