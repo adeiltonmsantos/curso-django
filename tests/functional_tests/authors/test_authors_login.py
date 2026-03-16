@@ -52,22 +52,22 @@ class AuthorsLoginFunctionalTest(AuthorsBaseFunctionalTest):
             self.browser.find_element(By.TAG_NAME, 'body').text
         )
 
-    def test_login_view_if_user_is_not_authenticated_with_none_data(self):
+    def test_login_form_is_invalid(self):
         # User opend login page
         complement_url = reverse('authors:login_register')
         self.browser.get(self.live_server_url + complement_url)
         self.sleep()
 
         # User types blank spaces in login and password fields
-        form = self.browser.find_element(By.CLASS_NAME, 'main-form')
+        form = self.get_by_class_name('main-form')
         self.get_by_placeholder(form, 'Type your username here').send_keys('   ')  # noqa: E501
         self.get_by_placeholder(form, 'Type your password here').send_keys('   ')  # noqa: E501
 
         form.submit()
-        form = self.browser.find_element(By.CLASS_NAME, 'main-form')
+        form = self.get_by_class_name('main-form')
         self.sleep()
 
         self.assertIn(
             'Invalid username or password',
-            self.browser.find_element(By.TAG_NAME, 'body').text
+            self.get_by_tag_name('body').text
         )
