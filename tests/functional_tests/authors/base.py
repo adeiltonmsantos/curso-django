@@ -29,3 +29,15 @@ class AuthorsBaseFunctionalTest(StaticLiveServerTestCase):
             By.XPATH,
             xpath
         )
+
+    def get_by_class_name(self, class_name):
+        return self.browser.find_element(
+            By.CLASS_NAME,
+            class_name
+        )
+
+    def get_by_tag_name(self, tag_name):
+        return self.browser.find_element(
+            By.TAG_NAME,
+            tag_name
+        )
