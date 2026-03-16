@@ -21,7 +21,7 @@ class AuthorsLoginFunctionalTest(AuthorsBaseFunctionalTest):
         self.sleep()
 
         # User fill fields with username and password
-        form = self.browser.find_element(By.CLASS_NAME, 'main-form')
+        form = self.get_by_class_name('main-form')
         login = self.get_by_placeholder(form, 'Type your username here')
         password = self.get_by_placeholder(form, 'Type your password here')
         login.send_keys(user.username)
@@ -31,13 +31,14 @@ class AuthorsLoginFunctionalTest(AuthorsBaseFunctionalTest):
         form.submit()
 
         # Form is reloaded
-        form = self.browser.find_element(By.CLASS_NAME, 'main-form')
+        form = self.get_by_class_name('main-form')
         self.sleep()
 
         # Testing...
         self.assertIn(
             f'You are logged in as {user.username}.',
-            self.browser.find_element(By.TAG_NAME, 'body').text
+            # self.browser.find_element(By.TAG_NAME, 'body').text
+            self.get_by_tag_name('body').text
         )
 
     def test_login_create_raises_404_if_not_post_method(self):
@@ -49,11 +50,11 @@ class AuthorsLoginFunctionalTest(AuthorsBaseFunctionalTest):
         # Testing if raises 404 error
         self.assertIn(
             'Not Found',
-            self.browser.find_element(By.TAG_NAME, 'body').text
+            self.get_by_tag_name('body').text
         )
 
     def test_login_form_is_invalid(self):
-        # User opend login page
+        # User opens login page
         complement_url = reverse('authors:login_register')
         self.browser.get(self.live_server_url + complement_url)
         self.sleep()
