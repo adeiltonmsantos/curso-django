@@ -175,6 +175,10 @@ class AuthorsRegisterFunctionalTest(AuthorsBaseFunctionalTest):
         # Submiting the form
         form.submit()
 
+        # Form updated
+        form = self.get_by_fullxpath('/html/body/main/div[3]/form')
+        self.sleep()
+
         # Testing success flash message
         self.assertIn(
             'Your user is created, please log in.',

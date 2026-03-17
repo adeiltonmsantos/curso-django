@@ -89,12 +89,14 @@ def login_create(request):
 def logout_view(request):
     # Checking if there's POST data. If not, redirecting to login page
     if not request.POST:
+        messages.error(request, 'Invalid logout request')
         return redirect(reverse('authors:login_register'))
 
     # Checking if user is authenticated. if not, redirect to login page
-    if not request.user.is_authenticated:
+    if request.POST.get('username') != request.user.username:
+        messages.error(request, 'Invalid logout user')
         return redirect(reverse('authors:login_register'))
 
+    messages.success(request, 'You are logged out.')
     logout(request)
-    messages.info(request, 'You are logged out.')
     return redirect(reverse('authors:login_register'))
