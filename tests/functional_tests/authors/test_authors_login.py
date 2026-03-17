@@ -1,7 +1,6 @@
 import pytest
 from django.contrib.auth.models import User
 from django.urls import reverse
-from selenium.webdriver.common.by import By
 
 from .base import AuthorsBaseFunctionalTest
 
@@ -70,5 +69,25 @@ class AuthorsLoginFunctionalTest(AuthorsBaseFunctionalTest):
 
         self.assertIn(
             'Invalid username or password',
+            self.get_by_tag_name('body').text
+        )
+
+    def test_user_tries_login_with_invalid_credentials(self):
+        # User opens login page
+        complement_url = reverse('authors:login_register')
+        self.browser.get(self.live_server_url + complement_url)
+        self.sleep()
+
+        # User types login and password of false user
+        form = self.get_by_class_name('main-form')
+        self.get_by_placeholder(form, 'Type your username here').send_keys('myUser')  # noqa: E501
+        self.get_by_placeholder(form, 'Type your password here').send_keys('@MyPassword')  # noqa: E501
+
+        form.submit()
+        form = self.get_by_class_name('main-form')
+        self.sleep()
+
+        self.assertIn(
+            'Invalid credentials',
             self.get_by_tag_name('body').text
         )
