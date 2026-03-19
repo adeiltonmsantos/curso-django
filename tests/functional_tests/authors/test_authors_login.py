@@ -17,7 +17,7 @@ class AuthorsLoginFunctionalTest(AuthorsBaseFunctionalTest):
         # User opens browser in login page
         complement_url = reverse('authors:login_register')
         self.browser.get(self.live_server_url + complement_url)
-        self.sleep()
+        self.sleep(6)
 
         # User fill fields with username and password
         form = self.get_by_class_name('main-form')
@@ -30,13 +30,12 @@ class AuthorsLoginFunctionalTest(AuthorsBaseFunctionalTest):
         form.submit()
 
         # Form is reloaded
-        form = self.get_by_class_name('main-form')
-        self.sleep()
+        form = self.get_by_class_name('logout-form')
+        self.sleep(6)
 
         # Testing...
         self.assertIn(
             f'You are logged in as {user.username}.',
-            # self.browser.find_element(By.TAG_NAME, 'body').text
             self.get_by_tag_name('body').text
         )
 
@@ -60,11 +59,11 @@ class AuthorsLoginFunctionalTest(AuthorsBaseFunctionalTest):
 
         # User types blank spaces in login and password fields
         form = self.get_by_class_name('main-form')
-        self.get_by_placeholder(form, 'Type your username here').send_keys('   ')  # noqa: E501
-        self.get_by_placeholder(form, 'Type your password here').send_keys('   ')  # noqa: E501
+        self.get_by_placeholder(form, 'Type your username here').send_keys(' ')  # noqa: E501
+        self.get_by_placeholder(form, 'Type your password here').send_keys(' ')  # noqa: E501
 
         form.submit()
-        form = self.get_by_class_name('main-form')
+        # form = self.get_by_class_name('main-form')
         self.sleep()
 
         self.assertIn(

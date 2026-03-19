@@ -1,0 +1,6 @@
+{% if request.user.is_authenticated %}
+<div class="login-message">
+    You are logged in as {{ request.user.username }}. 
+    {% include "global/partials/logout.html" %}
+</div>
+{% endif %}

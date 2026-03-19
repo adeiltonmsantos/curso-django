@@ -87,6 +87,7 @@ class AuthorsRegisterFunctionalTest(AuthorsBaseFunctionalTest):
 
             # Selecting form after submit
             form = self.get_by_fullxpath('/html/body/main/div[3]/form')
+            self.sleep(7)
 
             # Testing error message
             self.assertIn('Username must not be empty', form.text)

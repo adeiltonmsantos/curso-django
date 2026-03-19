@@ -58,28 +58,28 @@ def login_create(request):
 
     # Instantiating form with POST data
     form = LoginForm(request.POST)
-    # Login template URL
-    login_url = reverse('authors:login_register')
 
     # Form is valid. Trying authenticate user
     if form.is_valid():
         authenticated_user = authenticate(
-            username=form.cleaned_data.get('username', None),
-            password=form.cleaned_data.get('password', None),
+            username=form.cleaned_data.get('username', ''),
+            password=form.cleaned_data.get('password', ''),
         )
         # User is authenticated. Logging in and defining sucess message
         if authenticated_user is not None:
-            login(request, authenticated_user)
             messages.success(request, 'You are logged in')
+            login(request, authenticated_user)
         # User is not authenticated. Defining error message
         else:
             messages.error(request, 'Invalid credentials')
+            return redirect(reverse('authors:login_register'))
     # Form is not valid. Redirecting to login page with errors
     else:
         messages.error(request, 'Invalid username or password')
+        return redirect(reverse('authors:login_register'))
 
     # Redirecting to login page
-    return redirect(login_url)
+    return redirect(reverse('authors:dashboard'))
 
 
 @login_required(
@@ -100,3 +100,11 @@ def logout_view(request):
     messages.success(request, 'You are logged out.')
     logout(request)
     return redirect(reverse('authors:login_register'))
+
+
+@login_required(
+    login_url='authors:login',
+    redirect_field_name='next'
+)
+def dashboard(request):
+    return render(request, 'authors/pages/dashboard.html')
