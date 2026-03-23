@@ -5,13 +5,12 @@
 {% block content %}
   <div class="main-content center container">
     <h2>Dashboard Recipe</h2>
-    {% include "global/partials/messages.html" %}
+    {% include "global/partials/message.html" %}
     {% include "authors/partials/login_message.html" %}
 
     <div class="authors-dashboard-container">
-      
+      {% include "global/partials/form.html" %}
     </div>
+
   </div>
-
-
 {% endblock content %}
