@@ -63,6 +63,11 @@ img{
   max-width: 100%;
 }
 
+a{
+  color: var(--color-primary);
+  text-decoration: none;
+}
+
 h1,
 h2,
 h3,
