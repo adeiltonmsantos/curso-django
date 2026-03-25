@@ -59,6 +59,10 @@ body {
   color: var(--color-dark-text);
 }
 
+img{
+  max-width: 100%;
+}
+
 h1,
 h2,
 h3,
