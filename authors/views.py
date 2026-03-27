@@ -141,11 +141,69 @@ def dashboard_recipe_edit(request, id):
         instance=recipe
     )
 
+    if form.is_valid():
+        # Agora, o form é válido e eu posso tentar salvar
+        recipe = form.save(commit=False)
+
+        recipe.author = request.user
+        recipe.preparation_steps_is_html = False
+        recipe.is_published = False
+
+        recipe.save()
+
+        messages.success(request, 'Sua receita foi salva com sucesso!')
+        return redirect(reverse('authors:dashboard_recipe_edit', args=(id,)))
+
     return render(
         request,
         'authors/pages/dashboard_recipe.html',
         context={
-            'recipe': recipe,
-            'form': form
+            'form': form,
+            'title': 'Recipe'
         }
     )
+
+
+@login_required(
+    login_url='authors:login',
+    redirect_field_name='next'
+)
+def dashboard_recipe_view(request):
+    register_form_data = request.session.get('register_form_data', None)
+    form = AuthorRecipeForm(register_form_data)
+    return render(request,
+                  'authors/pages/dashboard_recipe.html',
+                  context={
+                      'form': form,
+                      'form_action': reverse('authors:dashboard_recipe_create'),  # noqa: E501
+                      'title': 'New Recipe',
+                  }
+                  )
+
+
+@login_required(
+    login_url='authors:login',
+    redirect_field_name='next'
+)
+def dashboard_recipe_create(request):
+    # Redirecting to 404 page if there's no POST data
+    if not request.POST:
+        raise Http404
+
+    # Instantiating form with POST data
+    form = AuthorRecipeForm(request.POST)
+
+    # Form is valid. Trying authenticate user
+    if form.is_valid():
+        recipe = form.save(commit=False)
+        recipe.is_published = False
+        recipe.author = request.user
+        recipe.save()
+
+        messages.success(request, 'Your recipe is successfully saved!')
+        return redirect(reverse('authors:dashboard_recipe_view'))
+
+    # Form is not valid. Redirecting to login page with errors
+    else:
+        messages.error(request, 'Correct the errors and try again')
+        return redirect(reverse('authors:dashboard_recipe_view'))
