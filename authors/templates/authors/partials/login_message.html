@@ -1,7 +1,8 @@
 {% if request.user.is_authenticated %}
 <div class="login-message">
     You are logged in as {{ request.user.username }}. 
-    <a href="{% url "authors:dashboard" %}">See your recipes here</a> or 
+    <a href="{% url "authors:dashboard" %}">See your recipes here</a>,  
+    <a href="{% url "authors:dashboard_recipe_new" %}">create a new recipe</a> or 
     {% include "global/partials/logout.html" %}
 </div>
 {% endif %}
