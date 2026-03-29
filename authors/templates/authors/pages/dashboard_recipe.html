@@ -1,10 +1,10 @@
 {% extends 'global/base.html' %}
 
-{% block title %}Dashboard Recipe | {% endblock title %}
+{% block title %}Dashboard {{ title }} | {% endblock title %}
 
 {% block content %}
   <div class="main-content center container">
-    <h2>Dashboard Recipe</h2>
+    <h2>Dashboard {{ title }}</h2>
     {% include "global/partials/message.html" %}
     {% include "authors/partials/login_message.html" %}
 
