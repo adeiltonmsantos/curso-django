@@ -138,11 +138,11 @@ def dashboard_recipe_edit(request, id):
 
     form = AuthorRecipeForm(
         request.POST or None,
+        files=request.FILES or None,
         instance=recipe
     )
 
     if form.is_valid():
-        # Agora, o form é válido e eu posso tentar salvar
         recipe = form.save(commit=False)
 
         recipe.author = request.user
@@ -151,15 +151,15 @@ def dashboard_recipe_edit(request, id):
 
         recipe.save()
 
-        messages.success(request, 'Sua receita foi salva com sucesso!')
+        messages.success(request, 'Your recipe has been successfully saved!')
         return redirect(reverse('authors:dashboard_recipe_edit', args=(id,)))
 
     return render(
         request,
         'authors/pages/dashboard_recipe.html',
         context={
-            'form': form,
-            'title': 'Recipe'
+            'recipe': recipe,
+            'form': form
         }
     )
 
@@ -168,42 +168,31 @@ def dashboard_recipe_edit(request, id):
     login_url='authors:login',
     redirect_field_name='next'
 )
-def dashboard_recipe_view(request):
-    register_form_data = request.session.get('register_form_data', None)
-    form = AuthorRecipeForm(register_form_data)
-    return render(request,
-                  'authors/pages/dashboard_recipe.html',
-                  context={
-                      'form': form,
-                      'form_action': reverse('authors:dashboard_recipe_create'),  # noqa: E501
-                      'title': 'New Recipe',
-                  }
-                  )
+def dashboard_recipe_new(request):
+    form = AuthorRecipeForm(
+        request.POST or None,
+        files=request.FILES or None,
+    )
 
-
-@login_required(
-    login_url='authors:login',
-    redirect_field_name='next'
-)
-def dashboard_recipe_create(request):
-    # Redirecting to 404 page if there's no POST data
-    if not request.POST:
-        raise Http404
-
-    # Instantiating form with POST data
-    form = AuthorRecipeForm(request.POST)
-
-    # Form is valid. Trying authenticate user
     if form.is_valid():
         recipe = form.save(commit=False)
-        recipe.is_published = False
+
         recipe.author = request.user
+        recipe.preparation_steps_is_html = False
+        recipe.is_published = False
+
         recipe.save()
 
-        messages.success(request, 'Your recipe is successfully saved!')
-        return redirect(reverse('authors:dashboard_recipe_view'))
+        messages.success(request, 'Your recipe has been successfully saved!')
+        return redirect(
+            reverse('authors:dashboard_recipe_edit', args=(recipe.id,))
+        )
 
-    # Form is not valid. Redirecting to login page with errors
-    else:
-        messages.error(request, 'Correct the errors and try again')
-        return redirect(reverse('authors:dashboard_recipe_view'))
+    return render(
+        request,
+        'authors/pages/dashboard_recipe.html',
+        context={
+            'form': form,
+            'form_action': reverse('authors:dashboard_recipe_new'),
+        }
+    )
