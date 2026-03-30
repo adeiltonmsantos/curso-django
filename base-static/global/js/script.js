@@ -1,6 +1,6 @@
 document.addEventListener('DOMContentLoaded', () => {
     
-    forms = document.querySelectorAll('.delete-form')
+    forms = document.querySelectorAll('.form-delete')
     forms.forEach(form => {
         form.addEventListener('submit', e => {
             e.preventDefault()
