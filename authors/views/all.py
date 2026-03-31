@@ -8,7 +8,7 @@ from django.utils.text import slugify
 
 from recipes.models import Recipe
 
-from .forms import AuthorRecipeForm, LoginForm, RegisterForm
+from ..forms import AuthorRecipeForm, LoginForm, RegisterForm
 
 
 def register_view(request):

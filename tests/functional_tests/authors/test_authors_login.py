@@ -30,7 +30,6 @@ class AuthorsLoginFunctionalTest(AuthorsBaseFunctionalTest):
         form.submit()
 
         # Form is reloaded
-        form = self.get_by_class_name('logout-form')
         self.sleep(6)
 
         # Testing...
