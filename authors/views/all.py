@@ -4,11 +4,12 @@ from django.contrib.auth.decorators import login_required
 from django.http import Http404
 from django.shortcuts import redirect, render
 from django.urls import reverse
-from django.utils.text import slugify
 
 from recipes.models import Recipe
 
-from ..forms import AuthorRecipeForm, LoginForm, RegisterForm
+from ..forms import LoginForm, RegisterForm
+
+# from django.utils.text import slugify
 
 
 def register_view(request):
@@ -119,83 +120,6 @@ def dashboard(request):
         'authors/pages/dashboard.html',
         context={
             'recipes': recipes,
-        }
-    )
-
-
-@login_required(
-    login_url='authors:login',
-    redirect_field_name='next'
-)
-def dashboard_recipe_edit(request, id):
-    recipe = Recipe.objects.filter(
-        is_published=False,
-        author=request.user,
-        pk=id
-    ).first()
-
-    if not recipe:
-        raise Http404()
-
-    form = AuthorRecipeForm(
-        request.POST or None,
-        files=request.FILES or None,
-        instance=recipe
-    )
-
-    if form.is_valid():
-        recipe = form.save(commit=False)
-
-        recipe.author = request.user
-        recipe.preparation_steps_is_html = False
-        recipe.is_published = False
-
-        recipe.save()
-
-        messages.success(request, 'Your recipe has been successfully saved!')
-        return redirect(reverse('authors:dashboard_recipe_edit', args=(id,)))
-
-    return render(
-        request,
-        'authors/pages/dashboard_recipe.html',
-        context={
-            'recipe': recipe,
-            'form': form
-        }
-    )
-
-
-@login_required(
-    login_url='authors:login',
-    redirect_field_name='next'
-)
-def dashboard_recipe_new(request):
-    form = AuthorRecipeForm(
-        request.POST or None,
-        files=request.FILES or None,
-    )
-
-    if form.is_valid():
-        recipe = form.save(commit=False)
-
-        recipe.author = request.user
-        recipe.preparation_steps_is_html = False
-        recipe.is_published = False
-        recipe.slug = slugify(recipe.title)
-
-        recipe.save()
-
-        messages.success(request, 'Your recipe has been successfully saved!')
-        return redirect(
-            reverse('authors:dashboard_recipe_edit', args=(recipe.id,))
-        )
-
-    return render(
-        request,
-        'authors/pages/dashboard_recipe.html',
-        context={
-            'form': form,
-            'form_action': reverse('authors:dashboard_recipe_new'),
         }
     )
 
