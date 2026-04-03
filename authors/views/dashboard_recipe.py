@@ -11,7 +11,7 @@ from recipes.models import Recipe
 
 @method_decorator(
     login_required(
-        login_url='authors:login',
+        login_url='authors:login_register',
         redirect_field_name='next'
     ),
     name='dispatch'
