@@ -29,7 +29,7 @@ class RecipeListViewBase(ListView):
 
     def get_context_data(self, *args, **kwargs):
         ctx = super().get_context_data(*args, **kwargs)
-        page_obj, pagination_obj = make_pagination(
+        page_obj, pagination_range = make_pagination(
             self.request,
             ctx.get('recipes'),
             PER_PAGE
@@ -37,7 +37,7 @@ class RecipeListViewBase(ListView):
         ctx.update(
             {
                 'recipes': page_obj,
-                'pagination_obj': pagination_obj
+                'pagination_range': pagination_range
             }
         )
 
@@ -46,13 +46,13 @@ class RecipeListViewBase(ListView):
 
 def home(request):
     recipes = Recipe.objects.filter(is_published=True).order_by('-id')
-    page_obj, pagination_obj = make_pagination(request, recipes, PER_PAGE)
+    page_obj, pagination_range = make_pagination(request, recipes, PER_PAGE)
     return render(
         request,
         'recipes/pages/home.html',
         context={
             'recipes': page_obj,
-            'pagination_obj': pagination_obj,
+            'pagination_range': pagination_range,
         })
 
 
