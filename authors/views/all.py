@@ -9,8 +9,6 @@ from recipes.models import Recipe
 
 from ..forms import LoginForm, RegisterForm
 
-# from django.utils.text import slugify
-
 
 def register_view(request):
     register_form_data = request.session.get('register_form_data', None)
