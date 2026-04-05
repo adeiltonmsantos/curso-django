@@ -47,7 +47,7 @@ def make_pagination(request, queryset, per_page, aditional_url_query=''):
 
     pagination_obj = make_pagination_range(
         paginator.object_list,
-        4,
+        per_page,
         current_page
     )
 
