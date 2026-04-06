@@ -14,6 +14,7 @@ per_page = int(os.environ.get('PER_PAGE', 2))
 PER_PAGE = int(os.environ.get('PER_PAGE', 2))
 
 
+# Base class for home, category and search templates
 class RecipeListViewBase(ListView):
     model = Recipe
     context_object_name = 'recipes'
@@ -44,16 +45,47 @@ class RecipeListViewBase(ListView):
         return ctx
 
 
-def home(request):
-    recipes = Recipe.objects.filter(is_published=True).order_by('-id')
-    page_obj, pagination_range = make_pagination(request, recipes, PER_PAGE)
-    return render(
-        request,
-        'recipes/pages/home.html',
-        context={
-            'recipes': page_obj,
-            'pagination_range': pagination_range,
-        })
+# Class Based View for Home
+class RecipeListViewBaseHome(RecipeListViewBase):
+    template_name = 'recipes/pages/home.html'
+
+
+class RecipeListViewCategory(RecipeListViewBase):
+    template_name = 'recipes/pages/category.html'
+
+    def get_queryset(self, *args, **kwargs):
+        qs = super().get_queryset(*args, **kwargs)
+        category_id = self.kwargs['category_id']
+        qs = qs.filter(
+            category__id=category_id,
+            is_published=True,
+        ).order_by('-id')
+
+        return get_list_or_404(qs)
+
+    def get_context_data(self, *args, **kwargs):
+        ctx = super().get_context_data(*args, **kwargs)
+        recipes = ctx.get('recipes')
+
+        ctx.update(
+            {
+                'title': f'{recipes[0].category.name} - Category | '
+            }
+        )
+
+        return ctx
+
+
+# def home(request):
+#     recipes = Recipe.objects.filter(is_published=True).order_by('-id')
+#     page_obj, pagination_range = make_pagination(request, recipes, PER_PAGE)
+#     return render(
+#         request,
+#         'recipes/pages/home.html',
+#         context={
+#             'recipes': page_obj,
+#             'pagination_range': pagination_range,
+#         })
 
 
 def category(request, category_id):
