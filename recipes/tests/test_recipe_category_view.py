@@ -11,8 +11,11 @@ class RecipeCategoryViewTest(RecipeTestBase):
         """
         Test if view function for category is correct
         """
-        view = resolve(reverse('recipes:category', kwargs={'category_id': 1}))
-        self.assertIs(view.func, views.category)
+        response = resolve(reverse(
+            'recipes:category',
+            kwargs={'category_id': 1}
+            ))
+        self.assertIs(response.func.view_class, views.RecipeListViewCategory)
 
     def test_recipe_view_category_returns_404_if_no_recipes_found(self):
         """

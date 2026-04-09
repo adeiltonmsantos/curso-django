@@ -61,7 +61,7 @@ class RecipeHomePageFunctionalTest(RecipeBaseFunctionalTest, RecipeMixin):
 
         # User opens the home page
         self.browser.get(self.live_server_url)
-        self.sleep(1)
+        self.sleep(6)
 
         # User sees pagination and click on page 2 link
         page_2 = self.browser.find_element(

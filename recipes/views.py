@@ -3,7 +3,7 @@ import os
 
 from django.db.models import Q
 from django.http import Http404
-from django.shortcuts import get_list_or_404, get_object_or_404, render  # noqa: E501
+from django.shortcuts import get_object_or_404, render  # noqa: E501
 from django.views.generic import ListView
 
 from utils.pagination import make_pagination
@@ -46,7 +46,7 @@ class RecipeListViewBase(ListView):
 
 
 # Class Based View for Home
-class RecipeListViewBaseHome(RecipeListViewBase):
+class RecipeListViewHome(RecipeListViewBase):
     template_name = 'recipes/pages/home.html'
 
 
@@ -56,13 +56,15 @@ class RecipeListViewCategory(RecipeListViewBase):
 
     def get_queryset(self, *args, **kwargs):
         qs = super().get_queryset(*args, **kwargs)
-        category_id = self.kwargs['category_id']
         qs = qs.filter(
-            category__id=category_id,
+            category__id=self.kwargs.get('category_id'),
             is_published=True,
         ).order_by('-id')
 
-        return get_list_or_404(qs)
+        if not qs:
+            raise Http404
+
+        return qs
 
     def get_context_data(self, *args, **kwargs):
         ctx = super().get_context_data(*args, **kwargs)
@@ -78,13 +80,14 @@ class RecipeListViewCategory(RecipeListViewBase):
 
 
 # Class Based View for Search
-class RecipeListViewBaseSearch(RecipeListViewBase):
-    template_name = 'recipes/pages/home.html'
+class RecipeListViewSearch(RecipeListViewBase):
+    template_name = 'recipes/pages/search.html'
 
     def get_queryset(self, *args, **kwargs):
         qs = super().get_queryset(*args, **kwargs)
 
         search_item = self.request.GET.get('q', '').strip()
+
         if not search_item:
             raise Http404()
 

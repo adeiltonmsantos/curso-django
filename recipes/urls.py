@@ -6,10 +6,10 @@ from . import views
 app_name = 'recipes'
 
 urlpatterns = [
-    path('', views.RecipeListViewBaseHome.as_view(), name='home'),
+    path('', views.RecipeListViewHome.as_view(), name='home'),
     path(
-        'recipes/search/',
-        views.RecipeListViewBaseSearch.as_view(),
+        'recipes/search',
+        views.RecipeListViewSearch.as_view(),
         name='search'
     ),
     path(
