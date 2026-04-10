@@ -3,8 +3,7 @@ import os
 
 from django.db.models import Q
 from django.http import Http404
-from django.shortcuts import get_object_or_404, render  # noqa: E501
-from django.views.generic import ListView
+from django.views.generic import DetailView, ListView
 
 from utils.pagination import make_pagination
 
@@ -117,13 +116,21 @@ class RecipeListViewSearch(RecipeListViewBase):
         return ctx
 
 
-def recipe(request, id):
-    recipe = get_object_or_404(Recipe, pk=id, is_published=True)
+class RecipeDetail(DetailView):
+    model = Recipe
+    context_object_name = 'recipe'
+    template_name = 'recipes/pages/recipe-view.html'
 
-    return render(
-        request,
-        'recipes/pages/recipe-view.html',
-        context={
-            'recipe': recipe,
+    def get_queryset(self):
+        qs = super().get_queryset()
+        qs = qs.filter(is_published=True)
+        return qs
+
+    def get_context_data(self, **kwargs):
+        ctx = super().get_context_data(**kwargs)
+
+        ctx.update({
             'is_detail_page': True,
         })
+
+        return ctx

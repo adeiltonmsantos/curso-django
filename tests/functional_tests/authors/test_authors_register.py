@@ -64,6 +64,7 @@ class AuthorsRegisterFunctionalTest(AuthorsBaseFunctionalTest):
 
             # Submiting the form with ENTER in field
             last_name_field.send_keys(Keys.ENTER)
+            self.sleep()
 
             # Selecting form after submit
             form = self.get_by_fullxpath('/html/body/main/div[3]/form')
@@ -84,6 +85,7 @@ class AuthorsRegisterFunctionalTest(AuthorsBaseFunctionalTest):
 
             # Submiting the form with ENTER in field
             username_field.send_keys(Keys.ENTER)
+            self.sleep()
 
             # Selecting form after submit
             form = self.get_by_fullxpath('/html/body/main/div[3]/form')
@@ -175,6 +177,7 @@ class AuthorsRegisterFunctionalTest(AuthorsBaseFunctionalTest):
 
         # Submiting the form
         form.submit()
+        self.sleep()
 
         # Form updated
         form = self.get_by_fullxpath('/html/body/main/div[3]/form')

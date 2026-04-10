@@ -11,8 +11,8 @@ class RecipeDetailViewTest(RecipeTestBase):
         """
         Test if a recipe in databank is loaded correctly in recipe detail view
         """
-        view = resolve(reverse('recipes:recipe', kwargs={'id': 1}))
-        self.assertIs(view.func, views.recipe)
+        resolve_obj = resolve(reverse('recipes:recipe', kwargs={'pk': 1}))
+        self.assertIs(resolve_obj.func.view_class, views.RecipeDetail)
 
     def test_recipe_view_recipe_detail_view_returns_404_if_no_recipes_found(self):  # noqa: E501
         """
@@ -20,7 +20,7 @@ class RecipeDetailViewTest(RecipeTestBase):
         is requested
         """
         response = self.client.get(
-            reverse('recipes:recipe', kwargs={'id': 1000})
+            reverse('recipes:recipe', kwargs={'pk': 1000})
         )
         self.assertEqual(response.status_code, 404)
 
@@ -40,6 +40,6 @@ class RecipeDetailViewTest(RecipeTestBase):
         """
         recipe = self.make_recipe(is_published=False)
         response = self.client.get(
-            reverse('recipes:recipe', kwargs={'id': recipe.id})
+            reverse('recipes:recipe', kwargs={'pk': recipe.id})
         )
         self.assertEqual(response.status_code, 404)
