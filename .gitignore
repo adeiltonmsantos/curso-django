@@ -130,3 +130,4 @@ db copy.sqlite3
 .coverage
 htmlcov/
 bin/*
+static/
