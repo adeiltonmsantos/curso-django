@@ -6,7 +6,16 @@ from . import views
 app_name = 'recipes'
 
 urlpatterns = [
-    path('', views.RecipeListViewHome.as_view(), name='home'),
+    path(
+        '',
+        views.RecipeListViewHome.as_view(),
+        name='home'
+    ),
+    path(
+        'recipes/api/v1',
+        views.RecipeListViewHomeApi.as_view(),
+        name='home-api'
+    ),
     path(
         'recipes/search',
         views.RecipeListViewSearch.as_view(),
